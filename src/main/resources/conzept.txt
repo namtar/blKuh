@@ -1,0 +1,48 @@
+Konzept für das blinde Kuh Spiel.
+
+Das Spiel "Klickibunti“ oder „Mahki“ wird von einem Spieler nach folgenden Regeln ge-
+spielt. Auf einem rechteckigen Spielbrett befinden sich m x n Felder in 2-5 Farben.
+Das Ziel ist es, alle Steine abzuräumen. Dazu muss ein Stein mit der Maus angetippt
+werden, der neben mindestens einem gleichfarbigen Stein liegt. Wurde eine Spalte ab-
+geräumt, rücken die anderen Spalten nach rechts. Beendet ist das Spiel, wenn alle
+Steine weg sind oder sich keine mehr abräumen lassen. Die Bewertung erfolgt beim
+Entfernen mit 2*n-2 (3 Steine =4 Pkt, 6 Steine 10 Pkt ...). Jede leere Spalte zählt zu-
+sätzlich 10 Pkt ( maximalen Endstand speichern). Ein Zug zurück (Undo) ermöglichen.
+
+
+Entwickeln Sie ein Konsolenprogramm, das das Spiel simuliert für m=20 und n=15
+-
+wählen Sie eine geeignete interne Speicherung und eine einfache Darstellung des Spielbrettes
+- das Spiel endet, wenn das Spielbrett leer ist oder kein Zug mehr möglich ist
+- strukturieren Sie das Programm sinnvoll mit Klassen
+- verwenden Sie verständliche Kommentare, die den Zweck, den Input und den Output der Methoden beschreiben
+
+8 Pkt
+
+Fakultative Erweiterung:
+a) Die Größe des Spielfeldes m und n ( >= 10 und <= 40) wird vom Benutzer eingegeben. Prüfen Sie die eingebenen Werte.
+1 Pkt
+b) Die Anzahl der Farben kann von 2 bis 5 gewählt werden.
+1 Pkt
+c) Realisieren Sie eine grafische OberfIäche ( z.B. Swing) mit einfacher Nutzerführung für das Spiel durch Wahl eines zu löschenden Steines mit der Maus.
+5 Pkt
+Bewertet werden der Programmquelltext 50%, die korrekte Arbeitsweise 30% und die Dokumentation 20%
+
+
+--------------------------------------------------------------
+Komponenten:
+
+- Zustand über eine Matrix speichern: 2 dimensionales Array
+- JMenu für das Menu. Optionen: Neu, Beenden, Undo, Spieloptionen, About
+- Einstellung der Spielfeldgröße und Auswahl der Farben über ein OptionPanel. Wählt der Spieler nichts aus, werden defaults genommen.
+- Punktezähler in einer Fußzeile.
+
+Offene Fragen:
+- Welche Informationen muss ein Feld haben? Farbe, Zustand?
+- Wie wird das initiale Spielfeld Setup durchgeführt?
+- Wie wird die Anzeige des Spielfelds realisiert? Buttons in einer Tabelle????
+
+
+
+
+
