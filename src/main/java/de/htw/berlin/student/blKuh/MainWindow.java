@@ -20,10 +20,11 @@ public class MainWindow extends JFrame {
 
 		// init up basic window values
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setPreferredSize(new Dimension(1024, 768));
+		setPreferredSize(new Dimension(800, 600));
 		setResizable(false); // we want a window with a static size
 		setTitle("Blinde Kuh");
-		
+		setContentPane(new SpielfeldView());
+
 		pack();
 		setVisible(true);
 	}
