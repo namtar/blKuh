@@ -180,4 +180,8 @@ public class Spielfeld {
 			matrix[i][sourceColumn] = null;
 		}
 	}
+
+	public Color[][] getMatrix() {
+		return matrix;
+	}
 }

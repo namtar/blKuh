@@ -30,10 +30,11 @@ public class Settings {
 
 		colorsToUse.add(Color.RED);
 		colorsToUse.add(Color.BLUE);
-		colorsToUse.add(Color.GREEN);
+		// number of colors 2-5
 
-		dimensionX = 4;
-		dimensionY = 4;
+		// dimension range: >= 10 && <= 40
+		dimensionX = 20;
+		dimensionY = 15;
 	}
 
 	/**
