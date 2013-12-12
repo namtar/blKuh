@@ -9,6 +9,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import de.htw.berlin.student.blKuh.view.OptionsView;
+
 /**
  * The main window of the blKuh swing application.
  * 
@@ -71,6 +73,7 @@ public class MainWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// hier das Optionsmenü öffen und danach die Einstellungen in der Spielfeld Klasse speichern.
 				// machen wir über ein popup und setzen die werte auf die spielfeld klasse.
+				setContentPane(new OptionsView());
 			}
 		});
 

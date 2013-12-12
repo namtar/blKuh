@@ -32,6 +32,13 @@
 
         <dependencies>
 
+				<dependency>
+					<groupId>tablelayout</groupId>
+					<artifactId>TableLayout</artifactId>
+					<version>20050920</version>
+				</dependency>
+            
+
                 <!-- LOGGING DEPENDENCIES - LOG4J -->
                 <dependency>
                         <groupId>log4j</groupId>
