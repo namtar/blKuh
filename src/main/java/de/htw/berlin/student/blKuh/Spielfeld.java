@@ -1,55 +1,34 @@
 package de.htw.berlin.student.blKuh;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import de.htw.berlin.student.blKuh.exceptions.NoNeighborsException;
+import de.htw.berlin.student.blKuh.model.Settings;
 
 public class Spielfeld {
 
-	private int dimensionX = 4;
-	private int dimensionY = 4;
-
-	private List<Color> colorsToUse = new ArrayList<Color>();
 	private Color[][] matrix;
+	private Settings settings;
+
+	int dimensionX;
+	int dimensionY;
+	List<Color> colorsToUse;
 
 	/**
 	 * Default constructor.
 	 */
 	public Spielfeld() {
-		this.initDefaults();
+		settings = Settings.getInstance();
 		generate();
 	}
 
-	/**
-	 * When creating the game area the first time, set defaults. These defaults
-	 * can be changed later.
-	 */
-	private void initDefaults() {
-
-		colorsToUse.add(Color.RED);
-		colorsToUse.add(Color.BLUE);
-		colorsToUse.add(Color.GREEN);
-	}
-
-	public void setGameAreaDimensions(int dimensionX, int dimensionY) {
-		this.dimensionX = dimensionX;
-		this.dimensionY = dimensionY;
-	}
-
-	public void setColorsToUse(List<Color> colorsToUse) {
-
-		if (colorsToUse == null) {
-			throw new IllegalArgumentException(
-					"The given colorsToUse may not be null");
-		}
-
-		this.colorsToUse = colorsToUse;
-	}
-
 	public void generate() {
+
+		dimensionX = settings.getDimensionX();
+		dimensionY = settings.getDimensionY();
+		colorsToUse = settings.getColorsToUse();
 
 		matrix = new Color[dimensionY][dimensionX];
 
@@ -64,8 +43,7 @@ public class Spielfeld {
 
 	}
 
-	public void performButtonClick(int choordX, int choordY)
-			throws NoNeighborsException {
+	public void performButtonClick(int choordX, int choordY) throws NoNeighborsException {
 		// TODO: wird aufgerufen, wenn ein Button geklickt wurde. Die
 		// Choorinaten entsprechen den Indexes auf der Matrix für x und y.
 		// 1. prüfe nachbarn und füge diese einer zu entfernen Liste hinzu
@@ -93,8 +71,7 @@ public class Spielfeld {
 			hasNeighbors = true;
 		}
 		if (!hasNeighbors) {
-			throw new NoNeighborsException(
-					"Tile has no neighbors with equal color.");
+			throw new NoNeighborsException("Tile has no neighbors with equal color.");
 		}
 
 		checkNeighbors(choordX, choordY, colorToCompare);
@@ -114,8 +91,7 @@ public class Spielfeld {
 			// wenn die Farbe übereinstimmt, dann entferne aus der Matrix
 			matrix[choordY][choordX] = null;
 
-			if (((choordX + 1) != dimensionX)
-					&& matrix[choordY][choordX + 1] != null) {
+			if (((choordX + 1) != dimensionX) && matrix[choordY][choordX + 1] != null) {
 				// wenn er einen Nachbar hat auf z.B. choordX + 1 und choordY
 				checkNeighbors(choordX + 1, choordY, colorToCompare);
 			}
