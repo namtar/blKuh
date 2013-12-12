@@ -75,7 +75,8 @@ public class Spielfeld {
 		// NoNeighborsException("Tile has no neighbors with equal color.");
 		// 2. Schließe Löcher, in dem man Steine nach unten Fallen lässt.
 		// Unser Startstein ist ein Sonderfall. Der muss bevor der Rekursion
-		// aufgerufen wird, prüfen ob er Nachbarn hat und seine Farbe ermitteln.
+		// aufgerufen wird, prüfen ob er Nachbarn hat und seine Farbe
+		// ermitteln.
 		Color colorToCompare = matrix[choordY][choordX];
 		boolean hasNeighbors = false;
 		if (matrix[choordY + 1][choordX].equals(colorToCompare)) {
@@ -123,9 +124,46 @@ public class Spielfeld {
 	}
 
 	private void cleanUpRows() {
-		// TODO: räumt die Rows auf und entfernt die Löcher.
-		// fange auf max index an zu iterieren. Graphisch sozusagen von unten
-		// nach oben.
+
+		for (int targetRow = dimensionY - 1; targetRow >= 0; targetRow--) {
+			if (checkForEmptyRow(targetRow)) {
+				// search row which ist not empty over me
+				if (targetRow != 0) {
+					for (int sourceRow = targetRow - 1; sourceRow >= 0; sourceRow--) {
+						if (!checkForEmptyRow(sourceRow)) {
+							moveRow(sourceRow, targetRow);
+							break;
+						}
+					}
+				}
+			}
+			// TODO: räumt die Rows auf und entfernt die Löcher.
+			// fange auf max index an zu iterieren. Graphisch sozusagen von
+			// unten
+			// nach oben.
+		}
+	}
+
+	private boolean checkForEmptyRow(int rowToCheck) {
+
+		boolean isEmpty = true;
+
+		for (int j = 0; j < dimensionX; j++) {
+			if (matrix[j][rowToCheck] != null) {
+				isEmpty = false;
+				break;
+			}
+		}
+
+		return isEmpty;
+	}
+
+	private void moveRow(int sourceRow, int targetRow) {
+
+		for (int j = 0; j < dimensionX; j++) {
+			matrix[j][targetRow] = matrix[j][sourceRow];
+			matrix[j][sourceRow] = null;
+		}
 	}
 
 	private void cleanUpColumns() {
