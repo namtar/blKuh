@@ -1,7 +1,10 @@
 package de.htw.berlin.student.blKuh.view;
 
+import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -9,7 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import de.htw.berlin.student.blKuh.model.TileButton;
+import de.htw.berlin.student.blKuh.component.TileButton;
+import de.htw.berlin.student.blKuh.model.Settings;
 
 public class SpielfeldView extends JPanel {
 
@@ -18,11 +22,71 @@ public class SpielfeldView extends JPanel {
 	private JTable table;
 	private Color[][] matrix;
 	private ActionListener tileClickedActionListener;
+	private TileButton[][] buttons;
+
+	private JPanel buttonPanel;
 
 	public SpielfeldView(Color[][] matrix) {
 
 		this.matrix = matrix;
-		setupTable();
+		// setupTable();
+		setUpPlayground();
+	}
+
+	private void setUpPlayground() {
+
+		Settings settings = Settings.getInstance();
+
+		buttonPanel = new JPanel();
+		buttons = new TileButton[settings.getDimensionY()][settings.getDimensionX()];
+		setLayout(new BorderLayout());
+		add(buttonPanel, BorderLayout.CENTER);
+
+		buttonPanel.setLayout(new GridLayout(settings.getDimensionY(), settings.getDimensionX()));
+
+		for (int i = 0; i < settings.getDimensionY(); i++) {
+			for (int j = 0; j < settings.getDimensionX(); j++) {
+
+				TileButton button = new TileButton(j, i, matrix[i][j]);
+				button.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						tileClickedActionListener.actionPerformed(e);
+					}
+				});
+
+				buttons[i][j] = button;
+				buttonPanel.add(button);
+			}
+		}
+	}
+
+	public void rebuild(Color[][] matrix) {
+
+		this.matrix = matrix;
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix[i].length; j++) {
+				// ensure that the buttons map is synchron to the matrix, if not we have a state that may never happen
+				if (buttons.length != matrix.length && buttons[i].length != matrix[i].length) {
+					throw new IllegalStateException("Buttons array size is not in sync with the data matrix size");
+				}
+				buttons[i][j].setBackground(matrix[i][j]);
+
+				// if there is no color and the button is not clickable remove action listener
+				if (matrix[i][j] == null) {
+					for (ActionListener listener : buttons[i][j].getActionListeners()) {
+						buttons[i][j].removeActionListener(listener);
+
+					}
+					buttons[i][j].setBackground(Color.BLACK);
+					buttons[i][j].setEnabled(false);
+				}
+			}
+		}
+
+		buttonPanel.validate();
+		buttonPanel.repaint();
 	}
 
 	private void setupTable() {

@@ -1,4 +1,4 @@
-package de.htw.berlin.student.blKuh.model;
+package de.htw.berlin.student.blKuh.component;
 
 import java.awt.Color;
 

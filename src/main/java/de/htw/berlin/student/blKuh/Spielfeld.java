@@ -57,18 +57,31 @@ public class Spielfeld {
 		// ermitteln.
 		Color colorToCompare = matrix[choordY][choordX];
 		boolean hasNeighbors = false;
-		if (matrix[choordY + 1][choordX].equals(colorToCompare)) {
-			// TODO: checke die array grenzen
-			hasNeighbors = true;
+
+		if ((choordY + 1) < matrix.length && matrix[choordY + 1][choordX] != null) {
+			// do not check in a direction, where no neighbours can be
+			if (matrix[choordY + 1][choordX].equals(colorToCompare)) {
+				hasNeighbors = true;
+			}
 		}
-		if (matrix[choordY - 1][choordX].equals(colorToCompare)) {
-			hasNeighbors = true;
+
+		if ((choordY - 1) >= 0 && matrix[choordY - 1][choordX] != null) {
+			// do not check in a direction, where no neighbours can be
+			if (matrix[choordY - 1][choordX].equals(colorToCompare)) {
+				hasNeighbors = true;
+			}
 		}
-		if (matrix[choordY][choordX + 1].equals(colorToCompare)) {
-			hasNeighbors = true;
+
+		if ((choordX + 1) < matrix[choordY].length && matrix[choordY][choordX + 1] != null) {
+			if (matrix[choordY][choordX + 1].equals(colorToCompare)) {
+				hasNeighbors = true;
+			}
 		}
-		if (matrix[choordY][choordX - 1].equals(colorToCompare)) {
-			hasNeighbors = true;
+
+		if ((choordX - 1) >= 0 && matrix[choordY][choordX - 1] != null) {
+			if (matrix[choordY][choordX - 1].equals(colorToCompare)) {
+				hasNeighbors = true;
+			}
 		}
 		if (!hasNeighbors) {
 			throw new NoNeighborsException("Tile has no neighbors with equal color.");
@@ -76,11 +89,7 @@ public class Spielfeld {
 
 		checkNeighbors(choordX, choordY, colorToCompare);
 		cleanUpRows();
-		// 3. Entferne leere Columns (cleanUpColums)
 		cleanUpColumns();
-		// ggf ein Rückgabewert, damit die Oberfläche neu gezeichnet werden
-		// kann.
-
 	}
 
 	private void checkNeighbors(int choordX, int choordY, Color colorToCompare) {
@@ -95,50 +104,44 @@ public class Spielfeld {
 				// wenn er einen Nachbar hat auf z.B. choordX + 1 und choordY
 				checkNeighbors(choordX + 1, choordY, colorToCompare);
 			}
+			if (((choordX - 1) >= 0) && matrix[choordY][choordX - 1] != null) {
+				checkNeighbors(choordX - 1, choordY, colorToCompare);
+			}
+			if (((choordY + 1) != dimensionY) && matrix[choordY + 1][choordX] != null) {
+				checkNeighbors(choordX, choordY + 1, colorToCompare);
+			}
+			if (((choordY - 1) >= 0) && matrix[choordY - 1][choordX] != null) {
+				checkNeighbors(choordX, choordY - 1, colorToCompare);
+			}
 		}
 
 	}
 
 	private void cleanUpRows() {
 
-		for (int targetRow = dimensionY - 1; targetRow >= 0; targetRow--) {
-			if (checkForEmptyRow(targetRow)) {
-				// search row which ist not empty over me
-				if (targetRow != 0) {
-					for (int sourceRow = targetRow - 1; sourceRow >= 0; sourceRow--) {
-						if (!checkForEmptyRow(sourceRow)) {
-							moveRow(sourceRow, targetRow);
-							break;
-						}
-					}
+		for (int currentRow = dimensionY - 1; currentRow >= 0; currentRow--) {
+
+			// if we have an empty cell, then check all cells above and close gaps
+			for (int currentCell = 0; currentCell < dimensionX; currentCell++) {
+
+				if (matrix[currentRow][currentCell] == null) {
+					// do cleanup
+					moveCells(currentRow, currentCell);
 				}
 			}
-			// TODO: räumt die Rows auf und entfernt die Löcher.
-			// fange auf max index an zu iterieren. Graphisch sozusagen von
-			// unten
-			// nach oben.
 		}
 	}
 
-	private boolean checkForEmptyRow(int rowToCheck) {
+	private void moveCells(int currentRow, int currentCell) {
 
-		boolean isEmpty = true;
+		for (int row = currentRow; row >= 0; row--) {
 
-		for (int j = 0; j < dimensionX; j++) {
-			if (matrix[j][rowToCheck] != null) {
-				isEmpty = false;
+			// if tile found to replace then do it and break. next iteration will do
+			if (matrix[row][currentCell] != null) {
+				matrix[currentRow][currentCell] = matrix[row][currentCell];
+				matrix[row][currentCell] = null;
 				break;
 			}
-		}
-
-		return isEmpty;
-	}
-
-	private void moveRow(int sourceRow, int targetRow) {
-
-		for (int j = 0; j < dimensionX; j++) {
-			matrix[j][targetRow] = matrix[j][sourceRow];
-			matrix[j][sourceRow] = null;
 		}
 	}
 

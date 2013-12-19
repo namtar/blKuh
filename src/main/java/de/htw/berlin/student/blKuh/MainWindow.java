@@ -10,8 +10,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import de.htw.berlin.student.blKuh.component.TileButton;
 import de.htw.berlin.student.blKuh.exceptions.NoNeighborsException;
-import de.htw.berlin.student.blKuh.model.TileButton;
 import de.htw.berlin.student.blKuh.view.OptionsView;
 import de.htw.berlin.student.blKuh.view.SpielfeldView;
 
@@ -134,10 +134,13 @@ public class MainWindow extends JFrame implements ActionListener {
 			TileButton button = (TileButton) e.getSource();
 			try {
 				spielFeld.performButtonClick(button.getChoordinateX(), button.getChoordinateY());
-				spielfeldView.rebuildTable(spielFeld.getMatrix());
+//				spielfeldView.rebuildTable(spielFeld.getMatrix());
+				spielfeldView.rebuild(spielFeld.getMatrix());
+				LOGGER.info("ActionPerfomend: "+ (TileButton) e.getSource());
 				// TODO: count points
 			} catch (NoNeighborsException e1) {
 				// if no neighbours are present do nothing for the moment.
+				LOGGER.info("NoNeighbours exception catched. There is nothing to do at the moment.");
 			}
 		}
 	}
