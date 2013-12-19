@@ -1,6 +1,7 @@
 package de.htw.berlin.student.blKuh.view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -21,10 +22,6 @@ public class SpielfeldView extends JPanel {
 	public SpielfeldView(Color[][] matrix) {
 
 		this.matrix = matrix;
-
-		this.table = new JTable();
-
-		this.add(new JScrollPane(table));
 		setupTable();
 	}
 
@@ -38,11 +35,13 @@ public class SpielfeldView extends JPanel {
 
 		// we go the easy way and generate a two dimensional array of buttons
 		TileButton[][] buttons = new TileButton[this.matrix.length][this.matrix[0].length];
+		Dimension buttonSize = new Dimension(10, 10);
 
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[i].length; j++) {
 
 				TileButton tile = new TileButton(j, i, matrix[i][j]);
+				tile.setSize(buttonSize);
 				tile.addActionListener(new ActionListener() {
 
 					@Override
@@ -61,13 +60,15 @@ public class SpielfeldView extends JPanel {
 		}
 
 		this.table = new JTable(buttons, columnNames);
-		this.validate();
-		this.repaint();
+
+		this.add(new JScrollPane(table));
 	}
 
 	public void rebuildTable(Color[][] matrix) {
 		this.matrix = matrix;
-		setupTable();
+
+		// TODO:
+		// do not instantiate the table newly, instead set only the properties to existing buttons
 	}
 
 	/**
