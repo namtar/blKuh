@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import de.htw.berlin.student.blKuh.model.TileButton;
@@ -23,7 +24,7 @@ public class SpielfeldView extends JPanel {
 
 		this.table = new JTable();
 
-		this.add(table);
+		this.add(new JScrollPane(table));
 		setupTable();
 	}
 
