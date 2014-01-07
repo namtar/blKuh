@@ -208,7 +208,7 @@ public class OptionsView extends JPanel {
 		numberOfColorsSlider.setPaintTrack(true);
 		numberOfColorsSlider.setPaintLabels(true);
 		numberOfColorsSlider.setValueIsAdjusting(true);
-		numberOfColorsSlider.setValue(2);
+		numberOfColorsSlider.setValue(settings.getColorsToUse().size());
 		numberOfColorsSlider.setSnapToTicks(true);
 		numberOfColorsSlider.addChangeListener(new ChangeListener() {
 
