@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import de.htw.berlin.student.blKuh.component.TileButton;
 import de.htw.berlin.student.blKuh.exceptions.NoNeighborsException;
@@ -30,7 +31,7 @@ public class MainWindow extends JFrame implements ActionListener {
 
 	/**
 	 * Constructor.
-	 */
+	 */	
 	public MainWindow() {
 
 		// init up basic window values
@@ -94,6 +95,10 @@ public class MainWindow extends JFrame implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				// hier einen Zug rückgängig machen falls möglich.
 				// informationen dazu finden sich in der spielfeld klasse
+				spielFeld.undo();
+				spielfeldView.rebuild(spielFeld.getMatrix());
+				// set points
+				spielfeldView.setPoints(spielFeld.getPoints());
 			}
 		});
 
@@ -134,10 +139,22 @@ public class MainWindow extends JFrame implements ActionListener {
 			TileButton button = (TileButton) e.getSource();
 			try {
 				spielFeld.performButtonClick(button.getChoordinateX(), button.getChoordinateY());
-//				spielfeldView.rebuildTable(spielFeld.getMatrix());
+				// spielfeldView.rebuildTable(spielFeld.getMatrix());
 				spielfeldView.rebuild(spielFeld.getMatrix());
-				LOGGER.info("ActionPerfomend: "+ (TileButton) e.getSource());
-				// TODO: count points
+				// LOGGER.info("ActionPerfomend: "+ (TileButton) e.getSource());
+				// set points
+				spielfeldView.setPoints(spielFeld.getPoints());
+
+				// check if there are moves left or if the games is won.
+				Boolean hasMovesLeft = spielFeld.hasMovesLeft();
+				if (hasMovesLeft == null) {
+					// games is won
+					JOptionPane.showMessageDialog(this, "Spiel gewonnen. Glückwunsch.");
+				} else if (!hasMovesLeft) {
+					// no more moves
+					JOptionPane.showMessageDialog(this, "Es sind keine Spielzüge mehr möglich.");
+				}
+
 			} catch (NoNeighborsException e1) {
 				// if no neighbours are present do nothing for the moment.
 				LOGGER.info("NoNeighbours exception catched. There is nothing to do at the moment.");

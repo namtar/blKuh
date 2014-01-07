@@ -7,14 +7,29 @@ import java.util.Random;
 import de.htw.berlin.student.blKuh.exceptions.NoNeighborsException;
 import de.htw.berlin.student.blKuh.model.Settings;
 
+/**
+ * Class that holds the playground data and calculate its state when events happen.
+ * 
+ * @author Matthias Drummer
+ * @author Marcel Piater
+ */
 public class Spielfeld {
 
 	private Color[][] matrix;
+	private Color[][] undoMatrix;
 	private Settings settings;
+
+	private int currentPoints = 0;
+	private int undoPoints = 0;
+	private int tileCounter = 0;
+	private int columnCounter = 0;
 
 	int dimensionX;
 	int dimensionY;
 	List<Color> colorsToUse;
+
+	int numberOfEmptyColumns = 0;
+	int undoNumberOfEmptyColumns = 0;
 
 	/**
 	 * Default constructor.
@@ -29,8 +44,14 @@ public class Spielfeld {
 		dimensionX = settings.getDimensionX();
 		dimensionY = settings.getDimensionY();
 		colorsToUse = settings.getColorsToUse();
+		currentPoints = 0;
+		undoPoints = 0;
+		numberOfEmptyColumns = 0;
+		undoNumberOfEmptyColumns = 0;
 
 		matrix = new Color[dimensionY][dimensionX];
+
+		undoMatrix = null;
 
 		Random rand = new Random();
 
@@ -43,6 +64,45 @@ public class Spielfeld {
 
 	}
 
+	private void createUndo() {
+
+		undoPoints = currentPoints;
+		undoNumberOfEmptyColumns = numberOfEmptyColumns;
+
+		undoMatrix = new Color[dimensionY][dimensionX];
+
+		for (int i = 0; i < dimensionY; i++) {
+			for (int j = 0; j < dimensionX; j++) {
+				undoMatrix[i][j] = matrix[i][j];
+			}
+		}
+	}
+
+	/**
+	 * Undoes one step if possible.
+	 */
+	public void undo() {
+
+		if (undoMatrix != null) {
+
+			for (int i = 0; i < dimensionY; i++) {
+				for (int j = 0; j < dimensionX; j++) {
+					matrix[i][j] = undoMatrix[i][j];
+				}
+			}
+
+			numberOfEmptyColumns = undoNumberOfEmptyColumns;
+			currentPoints = undoPoints;
+		}
+	}
+
+	/**
+	 * Method called when one tile has been clicked. The points are counted and an undo matrix is created.
+	 * 
+	 * @param choordX the x coordinate of the tile which has been clicked
+	 * @param choordY the y coordinate of the tile which has been clicked
+	 * @throws NoNeighborsException thrown if there are no neighbors nearby the clicked tile.
+	 */
 	public void performButtonClick(int choordX, int choordY) throws NoNeighborsException {
 		// TODO: wird aufgerufen, wenn ein Button geklickt wurde. Die
 		// Choorinaten entsprechen den Indexes auf der Matrix für x und y.
@@ -55,7 +115,54 @@ public class Spielfeld {
 		// Unser Startstein ist ein Sonderfall. Der muss bevor der Rekursion
 		// aufgerufen wird, prüfen ob er Nachbarn hat und seine Farbe
 		// ermitteln.
+
+		// set points to zero and undo
+		tileCounter = 0;
+		columnCounter = 0;
+
 		Color colorToCompare = matrix[choordY][choordX];
+		boolean hasNeighbors = hasNeighbors(choordY, choordX, colorToCompare);
+
+		// TODO: prüfe ob überhaupt noch weitere Züge möglich sind.
+		if (!hasNeighbors) {
+			throw new NoNeighborsException("Tile has no neighbors with equal color.");
+		} else {
+			// create undo when there are neighbors.
+			createUndo();
+		}
+
+		checkNeighbors(choordX, choordY, colorToCompare);
+		cleanUpRows();
+
+		// !important. Before cleaning up any columns count empty columns. This is not the best style because we have
+		// additional iterations over the whole matrix.
+		countPoints();
+		cleanUpColumns();
+	}
+
+	private void countPoints() {
+
+		countEmptyColumns();
+		currentPoints += 2 * tileCounter - 2;
+
+		if (columnCounter > numberOfEmptyColumns) {
+			int diff = columnCounter - numberOfEmptyColumns;
+			currentPoints += diff * 10;
+			numberOfEmptyColumns = columnCounter;
+		}
+	}
+
+	private void countEmptyColumns() {
+
+		for (int i = dimensionX - 1; i >= 0; i--) {
+			if (checkForEmptyColumn(i)) {
+				columnCounter++;
+			}
+		}
+	}
+
+	private boolean hasNeighbors(int choordY, int choordX, Color colorToCompare) {
+
 		boolean hasNeighbors = false;
 
 		if ((choordY + 1) < matrix.length && matrix[choordY + 1][choordX] != null) {
@@ -83,13 +190,8 @@ public class Spielfeld {
 				hasNeighbors = true;
 			}
 		}
-		if (!hasNeighbors) {
-			throw new NoNeighborsException("Tile has no neighbors with equal color.");
-		}
 
-		checkNeighbors(choordX, choordY, colorToCompare);
-		cleanUpRows();
-		cleanUpColumns();
+		return hasNeighbors;
 	}
 
 	private void checkNeighbors(int choordX, int choordY, Color colorToCompare) {
@@ -99,6 +201,7 @@ public class Spielfeld {
 
 			// wenn die Farbe übereinstimmt, dann entferne aus der Matrix
 			matrix[choordY][choordX] = null;
+			tileCounter++;
 
 			if (((choordX + 1) != dimensionX) && matrix[choordY][choordX + 1] != null) {
 				// wenn er einen Nachbar hat auf z.B. choordX + 1 und choordY
@@ -120,7 +223,6 @@ public class Spielfeld {
 	private void cleanUpRows() {
 
 		for (int currentRow = dimensionY - 1; currentRow >= 0; currentRow--) {
-
 			// if we have an empty cell, then check all cells above and close gaps
 			for (int currentCell = 0; currentCell < dimensionX; currentCell++) {
 
@@ -187,4 +289,44 @@ public class Spielfeld {
 	public Color[][] getMatrix() {
 		return matrix;
 	}
+
+	/**
+	 * Returns the current points.
+	 * 
+	 * @return the points
+	 */
+	public int getPoints() {
+		return currentPoints;
+	}
+
+	/**
+	 * Checks if there are any moves left to be performed.
+	 * 
+	 * @return true if there are moves left, false if there are no more moves and null if the game is won.
+	 */
+	public Boolean hasMovesLeft() {
+
+		Boolean result = null;
+
+		for (int i = 0; i < dimensionY; i++) {
+
+			for (int j = 0; j < dimensionX; j++) {
+
+				// check if we have not won.
+				if (matrix[i][j] != null) {
+					if (result == null) {
+						result = false;
+					}
+					// check if there are any moves left
+					if (hasNeighbors(i, j, matrix[i][j])) {
+						result = Boolean.TRUE;
+						return result;
+					}
+				}
+			}
+		}
+
+		return result;
+	}
+
 }
