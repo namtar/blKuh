@@ -8,15 +8,15 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 
 import de.htw.berlin.student.blKuh.component.TileButton;
 import de.htw.berlin.student.blKuh.model.Settings;
 
 /**
- * TODO: javadoc
+ * A view panel that displays the playground that consists of clickable buttons and displays the gained points.
  * 
  * @author Matthias Drummer
+ * @author Marcel Piater
  */
 public class SpielfeldView extends JPanel {
 
@@ -30,6 +30,11 @@ public class SpielfeldView extends JPanel {
 
 	private JLabel pointsValueLabel;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param matrix a two dimensional array of type color which represents our playground.
+	 */
 	public SpielfeldView(Color[][] matrix) {
 
 		this.matrix = matrix;
@@ -48,6 +53,7 @@ public class SpielfeldView extends JPanel {
 
 		buttonPanel.setLayout(new GridLayout(settings.getDimensionY(), settings.getDimensionX()));
 
+		// create playground and fill it with clickable buttons.
 		for (int i = 0; i < settings.getDimensionY(); i++) {
 			for (int j = 0; j < settings.getDimensionX(); j++) {
 
@@ -68,6 +74,7 @@ public class SpielfeldView extends JPanel {
 
 	private JPanel setUpFooter() {
 
+		// footer shall display the points.
 		JPanel footer = new JPanel();
 		JLabel pointsLabel = new JLabel("Punkte: ");
 		pointsValueLabel = new JLabel("0");
@@ -87,6 +94,11 @@ public class SpielfeldView extends JPanel {
 		pointsValueLabel.setText(String.valueOf(points));
 	}
 
+	/**
+	 * Rebuilds the visible playground with the values given by the color matrix.
+	 * 
+	 * @param matrix the playground area as two dimensional color array
+	 */
 	public void rebuild(Color[][] matrix) {
 
 		this.matrix = matrix;

@@ -3,7 +3,7 @@ package de.htw.berlin.student.blKuh.exceptions;
 /**
  * Exception to be thrown if the given tile has no neighbors.
  * 
- * @author MP
+ * @author Marcel Piater
  */
 public class NoNeighborsException extends Exception {
 

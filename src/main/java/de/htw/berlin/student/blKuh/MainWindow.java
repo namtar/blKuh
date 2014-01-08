@@ -20,6 +20,7 @@ import de.htw.berlin.student.blKuh.view.SpielfeldView;
  * The main window of the blKuh swing application.
  * 
  * @author Matthias Drummer
+ * @author Marcel Piater
  */
 public class MainWindow extends JFrame implements ActionListener {
 
@@ -31,7 +32,7 @@ public class MainWindow extends JFrame implements ActionListener {
 
 	/**
 	 * Constructor.
-	 */	
+	 */
 	public MainWindow() {
 
 		// init up basic window values
@@ -39,7 +40,6 @@ public class MainWindow extends JFrame implements ActionListener {
 		setPreferredSize(new Dimension(800, 600));
 		setResizable(false); // we want a window with a static size
 		setTitle("Blinde Kuh");
-		// setContentPane(new SpielfeldView());
 
 		// initial create Spielfeld object.
 		spielFeld = new Spielfeld();
@@ -77,8 +77,8 @@ public class MainWindow extends JFrame implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// hier das Optionsmenü öffen und danach die Einstellungen in der Spielfeld Klasse speichern.
-				// machen wir über ein popup und setzen die werte auf die spielfeld klasse.
+
+				// open options view
 				OptionsView view = new OptionsView();
 				getContentPane().removeAll();
 				getContentPane().add(view);
@@ -93,9 +93,9 @@ public class MainWindow extends JFrame implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// hier einen Zug rückgängig machen falls möglich.
-				// informationen dazu finden sich in der spielfeld klasse
+
 				spielFeld.undo();
+				// rebuild visible playground
 				spielfeldView.rebuild(spielFeld.getMatrix());
 				// set points
 				spielfeldView.setPoints(spielFeld.getPoints());
@@ -108,7 +108,8 @@ public class MainWindow extends JFrame implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// hier ein neues spielfeld erzeugen anhand der zuvor eingestellten optionen.
+
+				// generate new playground with the values from the settings singleton.
 				spielFeld.generate();
 				getContentPane().removeAll();
 
@@ -139,7 +140,6 @@ public class MainWindow extends JFrame implements ActionListener {
 			TileButton button = (TileButton) e.getSource();
 			try {
 				spielFeld.performButtonClick(button.getChoordinateX(), button.getChoordinateY());
-				// spielfeldView.rebuildTable(spielFeld.getMatrix());
 				spielfeldView.rebuild(spielFeld.getMatrix());
 				// LOGGER.info("ActionPerfomend: "+ (TileButton) e.getSource());
 				// set points
