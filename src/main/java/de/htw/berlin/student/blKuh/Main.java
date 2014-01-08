@@ -1,7 +1,5 @@
 package de.htw.berlin.student.blKuh;
 
-import java.util.UUID;
-
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -21,6 +19,7 @@ public class Main {
 			public void run() {
 
 				try {
+					// set look and feed, that fits on all platforms. This is necessary because of mac os.
 					UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();

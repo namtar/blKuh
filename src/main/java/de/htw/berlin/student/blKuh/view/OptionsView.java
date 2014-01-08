@@ -30,6 +30,7 @@ import de.htw.berlin.student.blKuh.model.Settings;
  * A panel for the options view to adjust color and playground size.
  * 
  * @author Matthias Drummer <s0542834>
+ * @author Marcel Piater
  */
 public class OptionsView extends JPanel {
 
@@ -54,6 +55,7 @@ public class OptionsView extends JPanel {
 	 * Constructor.
 	 */
 	public OptionsView() {
+		// get the setting singleton when instantiating.
 		this.settings = Settings.getInstance();
 		initUiElements();
 	}
@@ -145,6 +147,7 @@ public class OptionsView extends JPanel {
 				}
 
 				// validate dimensions before proceeding if no error has occured before
+				// we use an error label here. JOptionPanel would also go.
 				if (!validationError) {
 					if (dimensionX < 10 || dimensionX > 40 || dimensionY < 10 || dimensionY > 40) {
 						errorMessageLabel.setText("Die erlaubten Werte für X und oder Y müssen >= 10 und <= 40 sein.");
@@ -182,8 +185,7 @@ public class OptionsView extends JPanel {
 			button.addActionListener(new ActionListener() {
 
 				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
+				public void actionPerformed(ActionEvent e) {					
 
 					// verhindere, dass mehrmals die gleiche Farbe ausgewählt werden darf.
 					// stelle sicher, dass nur soviele Farben in der Liste sind, wie im slider ausgewählt.
@@ -201,6 +203,7 @@ public class OptionsView extends JPanel {
 
 	private void initNumberOfColorSlider() {
 
+		// configure the color slider
 		numberOfColorsSlider = new JSlider(2, 5);
 		numberOfColorsSlider.setMinorTickSpacing(1);
 		numberOfColorsSlider.setMajorTickSpacing(1);
